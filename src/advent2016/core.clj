@@ -43,3 +43,51 @@
   [s]
   (let [[x y] (:loc (move s))]
     (+ (Math/abs x) (Math/abs y))))
+
+
+(def Dir (s/enum \U \D \R \L))
+(def Loc [s/Int s/Int])
+(def dirs
+  {\U [0 1]
+   \D [0 -1]
+   \R [1 0]
+   \L [-1 0]})
+
+(def keypad
+  [[7 4 1]
+   [8 5 2]
+   [9 6 3]])
+
+(s/defn dir-vector :- Loc
+  [dir :- Dir]
+  (get dirs dir))
+
+(s/defn in-range :- s/Int
+  [n :- s/Int
+   limit :- s/Int]
+  (min limit (max 0 n)))
+
+(s/defn move-on-keypad :- Loc
+  [loc :- Loc
+   dir :- Dir]
+  (let [size (dec (count keypad))
+        [x y] loc
+        [dx dy] (dir-vector dir)
+        newx (in-range (+ x dx) size)
+        newy (in-range (+ y dy) size)]
+    [newx newy]))
+
+(s/defn loc-to-key :- s/Str
+  [loc :- Loc]
+  (str (get-in keypad loc)))
+
+(s/defn follow-instructions :- Loc
+  [loc :- Loc
+   instructions :- s/Str]
+  (reduce move-on-keypad loc instructions))
+
+(s/defn d02 :- s/Str
+  [codes :- s/Str]
+  (let [lines (str/split codes #"\n")
+        locs (reductions follow-instructions [1 1] lines)]
+    (apply str (map loc-to-key (rest locs)))))

@@ -37,4 +37,14 @@
     "R5, L5, R5, R3" 12))
 
 
-
+(facts "d02"
+  (facts "in-range"
+    (fact (in-range 3 2) => 2)
+    (fact (in-range -8 3) => 0))
+  (facts "move-on-keypad"
+    (fact (move-on-keypad [1 2] \D) => [1 1])
+    (fact (move-on-keypad [1 2] \U) => [1 2]))
+  (facts "follow-instructions"
+    (fact (follow-instructions [0 0] "UUU") => [0 2]))
+  (facts "d02"
+    (fact (d02 "ULL\nRRDDD\nLURDL\nUUUUD") => "1985")))
