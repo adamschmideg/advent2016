@@ -1,4 +1,5 @@
 (ns advent2016.core
+  (:use [clojure.edn :only [read-string]])
   (:require [schema.core :as s]
             [clojure.string :as string]
             [clojure.string :as str]))
@@ -112,3 +113,21 @@
     (filter valid-str-triangle x)
     (count x)))
 
+
+(def RoomNumber {:name s/Str, :sector s/Int, :checksum s/Str})
+
+(s/defn parse-room :- RoomNumber
+  [s :- s/Str]
+  (let [[_ room sector checksum] (re-matches #"([-a-z]+)-([0-9]+)\[([a-z]+)\]" s)]
+    {:room room, :sector (read-string sector), :checksum checksum}))
+
+(s/defn real-compare :- Unit
+  [a :- MapEntry
+   b :- MapEntry]
+  (let [freq (compare (val a) (val b))]
+    (if (zero? freq)
+        (compare (key a) (key b))
+        freq)))
+
+(s/defn checksum :- s/Str
+  [s :- s/Str])

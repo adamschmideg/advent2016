@@ -61,3 +61,8 @@
   (fact "valid-str-triangle" (valid-str-triangle "5 10 25") => false)
   (fact "d03"
     (d03 " 5  5  5\n5 10 25\n10 25 5\n") => 1))
+
+
+(facts "d04"
+  (fact "parse-room"
+    (parse-room "abc-de-f-567[decoy]") => {:room "abc-de-f", :sector 567, :checksum "decoy"}))
