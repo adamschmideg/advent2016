@@ -91,3 +91,24 @@
   (let [lines (str/split codes #"\n")
         locs (reductions follow-instructions [1 1] lines)]
     (apply str (map loc-to-key (rest locs)))))
+
+
+(s/defn valid-triangle :- s/Bool
+  [a :- s/Int
+   b :- s/Int
+   c :- s/Int]
+  (and (< a (+ b c))
+       (< b (+ a c))
+       (< c (+ a b))))
+
+(s/defn valid-str-triangle :- s/Bool
+  [s :- s/Str]
+  (apply valid-triangle (map clojure.edn/read-string (str/split (str/trim s) #"\s+"))))
+
+(s/defn d03 :- s/Int
+  [s :- s/Str]
+  (as-> s x
+    (str/split x #"\n")
+    (filter valid-str-triangle x)
+    (count x)))
+

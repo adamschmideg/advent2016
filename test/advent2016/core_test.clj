@@ -48,3 +48,16 @@
     (fact (follow-instructions [0 0] "UUU") => [0 2]))
   (facts "d02"
     (fact (d02 "ULL\nRRDDD\nLURDL\nUUUUD") => "1985")))
+
+
+(facts "d03"
+  (tabular "valid-triangle"
+    (fact (valid-triangle ?a ?b ?c) => ?valid)
+    ?a ?b ?c ?valid
+     5  5  5   true
+     5 10 25  false
+    10 25  5  false
+    25  5 10  false)
+  (fact "valid-str-triangle" (valid-str-triangle "5 10 25") => false)
+  (fact "d03"
+    (d03 " 5  5  5\n5 10 25\n10 25 5\n") => 1))
