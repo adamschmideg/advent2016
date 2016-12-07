@@ -65,4 +65,15 @@
 
 (facts "d04"
   (fact "parse-room"
-    (parse-room "abc-de-f-567[decoy]") => {:room "abc-de-f", :sector 567, :checksum "decoy"}))
+    (parse-room "abc-de-f-567[decoy]") => {:name "abc-de-f", :sector 567, :checksum "decoy"})
+  (tabular
+    (fact "real-compare" (real-compare (first ?a) (first ?b)) => ?compared)
+    ?a ?b ?compared
+    {:z 1} {:a 2} 1
+    {:x 3} {:y 3} -1
+    {:q 7} {:q 7} 0)
+  (facts "checksum"
+    (fact "most frequent" (checksum "zzzzzz-fffff-xxxx-bbb-yy-a") => "zfxby")
+    (fact "alphabetic" (checksum "aaaaa-bbb-z-y-x") => "abxyz"))
+  (fact "d04"
+    (d04 "aaaaa-bbb-z-y-x-123[abxyz]\na-b-c-d-e-f-g-h-987[abcde]\nnot-a-real-room-404[oarel]\ntotally-real-room-200[decoy]") => 1514))

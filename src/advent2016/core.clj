@@ -119,15 +119,32 @@
 (s/defn parse-room :- RoomNumber
   [s :- s/Str]
   (let [[_ room sector checksum] (re-matches #"([-a-z]+)-([0-9]+)\[([a-z]+)\]" s)]
-    {:room room, :sector (read-string sector), :checksum checksum}))
+    {:name room, :sector (read-string sector), :checksum checksum}))
 
 (s/defn real-compare :- Unit
-  [a :- MapEntry
-   b :- MapEntry]
-  (let [freq (compare (val a) (val b))]
+  [a :- clojure.lang.MapEntry
+   b :- clojure.lang.MapEntry]
+  (let [freq (compare (val b) (val a))]
     (if (zero? freq)
         (compare (key a) (key b))
         freq)))
 
+(s/defn remove-dashes :- s/Str
+  [s :- s/Str]
+  (str/replace s "-" ""))
+
 (s/defn checksum :- s/Str
-  [s :- s/Str])
+  [s :- s/Str]
+  (->> s remove-dashes frequencies (sort real-compare) (take 5) keys (apply str)))
+
+(s/defn real-room? :- s/Bool
+  [room :- RoomNumber]
+  (= (:checksum room) (checksum (:name room))))
+
+(s/defn d04 :- s/Int
+  [s :- s/Str]
+  (let [rooms (map parse-room (str/split s #"\n"))]
+    (->> rooms
+         (filter real-room?)
+         (map :sector)
+         (apply +))))
