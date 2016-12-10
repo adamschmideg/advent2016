@@ -6,4 +6,5 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [prismatic/schema "1.1.3"]
                  [midje "1.8.3"]
-                 [pandect "0.6.1"]])
+                 [pandect "0.6.1"]
+                 [net.mikera/core.matrix "0.57.0"]])

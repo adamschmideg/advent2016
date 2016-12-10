@@ -102,3 +102,11 @@
   (fact "d07"
     (d07 "XXX\nabba[mnop]qrst\nabcd[bddb]xyyx\naaaa[qwer]tyui\nioxxoj[asdfgh]zxcvbn") => 2))
 
+(facts "d08"
+  (tabular "read-lcd-command"
+    (fact (read-lcd-command ?command-str) => ?command)
+    ?command-str ?command
+    "rect 3x4" {:command :rect, :params [3 4]}
+    "rotate column x=1 by 2" {:command :rotate-column, :params [1 2]}
+    "rotate row y=0 by 4" {:command :rotate-row, :params [0 4]}))
+

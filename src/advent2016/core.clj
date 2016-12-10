@@ -3,7 +3,9 @@
         [pandect.algo.md5 :only [md5]])
   (:require [schema.core :as s]
             [clojure.string :as string]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.edn :as edn]
+            [clojure.core.matrix :as mat]))
 
 (def Unit (s/enum -1 0 1))
 
@@ -201,3 +203,18 @@
   (->> (str/split s #"\n")
        (filter supports-tls?)
        count))
+
+
+(s/defn read-lcd-command :- {:command (s/enum :rect :rotate-row :rotate-column), :params [s/Int]}
+  [cmd :- s/Str]
+  (let [[command [_ & params]]
+        (condp #(re-matches %1 %2) cmd
+           #"rect (\d+)x(\d+)" :>> #(vector :rect %)
+           #"rotate row y=(\d+) by (\d+)" :>> #(vector :rotate-row %)
+           #"rotate column x=(\d+) by (\d+)" :>> #(vector :rotate-column %))
+        params (map edn/read-string params)]
+    {:command command, :params params}))
+
+(defn lcd-rect
+  [m width height]
+  m)
