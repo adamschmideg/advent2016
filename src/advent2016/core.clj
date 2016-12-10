@@ -185,3 +185,19 @@
       counting-seq
       (map most-frequent)
       (apply str)))
+
+(def tls-re #"(.)(.)\2\1")
+(def tls-in-brackets-re #"\[[^\]]*(.)(.)\2\1.*]")
+
+(s/defn supports-tls? :- s/Bool
+  [ip :- s/Str]
+  (when-let [match (re-find tls-re ip)]
+    (let [[_ a b] match]
+      (and (not (= a b))
+           (not (re-find tls-in-brackets-re ip))))))
+
+(defn d07
+  [s]
+  (->> (str/split s #"\n")
+       (filter supports-tls?)
+       count))

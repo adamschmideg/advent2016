@@ -90,3 +90,15 @@
   (fact "most-frequest" (most-frequent {:a 3, :b 8, :c 1}) => :b)
   (fact "d06"
     (d06 "eedadn\ndrvtee\neandsr\nraavrd\natevrs\ntsrnev\nsdttsa\nrasrtv\nnssdts\nntnada\nsvetve\ntesnvt\nvntsnd\nvrdear\ndvrsen\nenarar") => "easter"))
+
+(facts "d07"
+  (tabular "supports-tls?"
+    (fact (supports-tls? ?ip) => ?supports)
+    ?ip ?supports
+    "abba[mnop]qrst" truthy
+    "abcd[bddb]xyyx" falsey
+    "aaaa[qwer]tyui" falsey
+    "ioxxoj[asdfgh]zxcvbn" truthy)
+  (fact "d07"
+    (d07 "XXX\nabba[mnop]qrst\nabcd[bddb]xyyx\naaaa[qwer]tyui\nioxxoj[asdfgh]zxcvbn") => 2))
+
