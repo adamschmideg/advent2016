@@ -77,3 +77,16 @@
     (fact "alphabetic" (checksum "aaaaa-bbb-z-y-x") => "abxyz"))
   (fact "d04"
     (d04 "aaaaa-bbb-z-y-x-123[abxyz]\na-b-c-d-e-f-g-h-987[abcde]\nnot-a-real-room-404[oarel]\ntotally-real-room-200[decoy]") => 1514))
+
+(facts "d05"
+  (fact "2" (d05 "abc" 2) => "18"))
+
+(facts "d06"
+  (facts "counting"
+    (fact "new item" (counting {:a 2} :b) => {:a 2, :b 1})
+    (fact "existing item" (counting {:c 3, :d 4} :c) => {:c 4, :d 4}))
+  (fact "counting-seq"
+    (counting-seq ["ab" "aa"]) => [{\a 2}, {\a 1 \b 1}])
+  (fact "most-frequest" (most-frequent {:a 3, :b 8, :c 1}) => :b)
+  (fact "d06"
+    (d06 "eedadn\ndrvtee\neandsr\nraavrd\natevrs\ntsrnev\nsdttsa\nrasrtv\nnssdts\nntnada\nsvetve\ntesnvt\nvntsnd\nvrdear\ndvrsen\nenarar") => "easter"))

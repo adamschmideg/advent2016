@@ -1,5 +1,6 @@
 (ns advent2016.core
-  (:use [clojure.edn :only [read-string]])
+  (:use [clojure.edn :only [read-string]]
+        [pandect.algo.md5 :only [md5]])
   (:require [schema.core :as s]
             [clojure.string :as string]
             [clojure.string :as str]))
@@ -148,3 +149,39 @@
          (filter real-room?)
          (map :sector)
          (apply +))))
+
+(defn d05
+  ([s digits]
+   (->> (map #(str s %) (range))
+       (filter #(str/starts-with? (md5 %) "00000"))
+       (map #(subs (md5 %) 5 6))
+       (take digits)
+       (apply str)))
+  ([s] (d05 s 8)))
+
+
+(s/defn counting :- {s/Any s/Int}
+  [counted :- {s/Any s/Int}
+   item :- s/Any]
+  (let [count (inc (get counted item 0))]
+    (assoc counted item count)))
+
+(s/defn counting-seq :- [{s/Any s/Int}]
+  [xs :- [[s/Any]]]
+  (let [init (repeat (count (first xs)) {})]
+    (reduce
+      (fn [counts items]
+        (map #(counting %1 %2) counts items))
+      init
+      xs)))
+
+(s/defn most-frequent :- s/Any
+  [freqs :- {s/Any s/Int}]
+  (key (last (sort-by val freqs))))
+
+(defn d06
+  [s]
+  (->> (str/split s #"\n")
+      counting-seq
+      (map most-frequent)
+      (apply str)))
