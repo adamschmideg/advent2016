@@ -1,7 +1,8 @@
 (ns advent2016.core-test
   (:require [clojure.test :refer :all]
             [midje.sweet :refer :all]
-            [advent2016.core :refer :all]))
+            [advent2016.core :refer :all]
+            [clojure.core.matrix :as mat]))
 
 (facts "d01"
   (facts "signum"
@@ -106,7 +107,20 @@
   (tabular "read-lcd-command"
     (fact (read-lcd-command ?command-str) => ?command)
     ?command-str ?command
-    "rect 3x4" {:command :rect, :params [3 4]}
-    "rotate column x=1 by 2" {:command :rotate-column, :params [1 2]}
-    "rotate row y=0 by 4" {:command :rotate-row, :params [0 4]}))
+    "rect 3x4" {:command lcd-rect, :params [3 4]}
+    "rotate column x=1 by 2" {:command lcd-rotate-column, :params [1 2]}
+    "rotate row y=0 by 4" {:command lcd-rotate-row, :params [0 4]})
+  (fact "lcd-rect" (lcd-rect [[0 0 0] [0 0 0]] 2 1) => [[1 1 0] [0 0 0]])
+  (fact "lcd-rotate-row" (lcd-rotate-row [[1 2 3] [4 5 6]] 0 1) => [[3 1 2] [4 5 6]])
+  (tabular "commands"
+    (let [m  [[0 1 0]
+              [1 0 0]]]
+      (fact (perform-lcd-command m ?command) => ?result))
+    ?command ?result
+    {:command lcd-rect, :params [3 1]} [[1 1 1]
+                                        [1 0 0]]
+    {:command lcd-rotate-row, :params [0 2]} [[1 0 0]
+                                              [1 0 0]]
+    {:command lcd-rotate-row, :params [1 2]} [[0 1 0]
+                                              [0 0 1]]))
 

@@ -205,16 +205,40 @@
        count))
 
 
-(s/defn read-lcd-command :- {:command (s/enum :rect :rotate-row :rotate-column), :params [s/Int]}
-  [cmd :- s/Str]
-  (let [[command [_ & params]]
-        (condp #(re-matches %1 %2) cmd
-           #"rect (\d+)x(\d+)" :>> #(vector :rect %)
-           #"rotate row y=(\d+) by (\d+)" :>> #(vector :rotate-row %)
-           #"rotate column x=(\d+) by (\d+)" :>> #(vector :rotate-column %))
-        params (map edn/read-string params)]
-    {:command command, :params params}))
+(def LcdCommand
+  {:command (s/enum :rect :rotate-row :rotate-column), :params [s/Int]})
 
 (defn lcd-rect
   [m width height]
+  (let [indices (for [x (range width)
+                      y (range height)]
+                  [y x])]
+    (mat/set-indices m indices 1)))
+
+(defn lcd-rotate-row
+  [m row count]
+  (as-> m $
+      (mat/get-row $ row)
+      (mat/rotate $ 0 (- count))
+      (mat/set-row m row $)))
+
+(defn lcd-rotate-column
+  [m column count]
   m)
+
+(s/defn read-lcd-command :- LcdCommand
+  [cmd :- s/Str]
+  (let [[command [_ & params]]
+        (condp #(re-matches %1 %2) cmd
+           #"rect (\d+)x(\d+)" :>> #(vector lcd-rect %)
+           #"rotate row y=(\d+) by (\d+)" :>> #(vector lcd-rotate-row %)
+           #"rotate column x=(\d+) by (\d+)" :>> #(vector lcd-rotate-column %))
+        params (map edn/read-string params)]
+    {:command command, :params params}))
+
+(defn perform-lcd-command
+  [matrix command]
+  (let [f (:command command)
+        params (:params command)
+        all-params (into [matrix] params)]
+    (apply f all-params)))
