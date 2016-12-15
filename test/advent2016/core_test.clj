@@ -112,6 +112,7 @@
     "rotate row y=0 by 4" {:command lcd-rotate-row, :params [0 4]})
   (fact "lcd-rect" (lcd-rect [[0 0 0] [0 0 0]] 2 1) => [[1 1 0] [0 0 0]])
   (fact "lcd-rotate-row" (lcd-rotate-row [[1 2 3] [4 5 6]] 0 1) => [[3 1 2] [4 5 6]])
+  (fact "lcd-rotate-column" (lcd-rotate-column [[1 2 3] [4 5 6]] 0 1) => [[4 2 3] [1 5 6]])
   (tabular "commands"
     (let [m  [[0 1 0]
               [1 0 0]]]
@@ -123,4 +124,3 @@
                                               [1 0 0]]
     {:command lcd-rotate-row, :params [1 2]} [[0 1 0]
                                               [0 0 1]]))
-

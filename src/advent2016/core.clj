@@ -224,7 +224,10 @@
 
 (defn lcd-rotate-column
   [m column count]
-  m)
+  (as-> m $
+        (mat/get-column $ column)
+        (mat/rotate $ 0 (- count))
+        (mat/set-column m column $)))
 
 (s/defn read-lcd-command :- LcdCommand
   [cmd :- s/Str]
@@ -242,3 +245,13 @@
         params (:params command)
         all-params (into [matrix] params)]
     (apply f all-params)))
+
+(defn d08
+  [s]
+  (let [lines (str/split s #"\n")
+        lcd (mat/reshape 0 [6 50])
+        final-lcd (reduce (fn [m cmd]
+                            (perform-lcd-command m (read-lcd-command cmd)))
+                          lcd
+                          lines)]
+    (apply + (mat/to-vector final-lcd))))
