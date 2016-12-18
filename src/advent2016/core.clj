@@ -255,3 +255,28 @@
                           lcd
                           lines)]
     (apply + (mat/to-vector final-lcd))))
+
+
+(s/defn decompress-one :- [s/Str s/Str]
+  [s :- s/Str]
+  (if-let [[_ before length-str count-str] (re-find #"(.*?)\((\d+)x(\d+)\)" s)]
+    (let [start (+ (count before) (count length-str) (count count-str) 3)
+          rest (subs s start)
+          length (edn/read-string length-str)
+          count (edn/read-string count-str)
+          to-repeat (subs rest 0 length)
+          rest (subs rest length)
+          decompressed (apply str (repeat count to-repeat))]
+      [(str before decompressed) rest])
+    [s ""]))
+
+(s/defn d09 :- s/Str
+  [s :- s/Str]
+  (loop [result ""
+         decompressed-once (decompress-one s)]
+    (let [[decompressed rest] decompressed-once]
+      (if (str/blank? rest)
+        (str result decompressed)
+        (recur
+          (str result decompressed)
+          (decompress-one rest))))))

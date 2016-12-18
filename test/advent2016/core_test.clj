@@ -124,3 +124,15 @@
                                               [1 0 0]]
     {:command lcd-rotate-row, :params [1 2]} [[0 1 0]
                                               [0 0 1]]))
+
+(facts "d09"
+  (tabular "decompress-one"
+    (fact (decompress-one ?raw) => ?decompressed)
+    ?raw ?decompressed
+    "ADVENT" ["ADVENT" ""]
+    "A(1x5)BC" ["ABBBBB" "C"]
+    "(3x3)XYZ" ["XYZXYZXYZ" ""]
+    "A(2x2)BCD" ["ABCBC" "D"]
+    "(6x1)(1x3)A" ["(1x3)A" ""])
+  (fact "d09" (d09 "A(2x2)BCD(2x2)EFG") => "ABCBCDEFEFG"))
+
