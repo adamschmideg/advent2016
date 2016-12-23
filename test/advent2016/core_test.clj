@@ -136,3 +136,7 @@
     "(6x1)(1x3)A" ["(1x3)A" ""])
   (fact "d09" (d09 "A(2x2)BCD(2x2)EFG") => "ABCBCDEFEFG"))
 
+
+(facts "d10"
+  (fact "bot-ready" (bot-ready {0 {:chips []}, 2 {:chips [2 3]}, 1 {:chips [1 4]}}) => {:chips [1 4]}))
+

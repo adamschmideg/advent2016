@@ -5,7 +5,8 @@
             [clojure.string :as string]
             [clojure.string :as str]
             [clojure.edn :as edn]
-            [clojure.core.matrix :as mat]))
+            [clojure.core.matrix :as mat])
+  (:import (sun.security.acl WorldGroupImpl)))
 
 (def Unit (s/enum -1 0 1))
 
@@ -280,3 +281,38 @@
         (recur
           (str result decompressed)
           (decompress-one rest))))))
+
+
+(def BotTarget {:type (s/enum :bot :output)
+                :id s/Int})
+
+(def Chip s/Int)
+
+(def Bot {:id s/Int
+          :low BotTarget
+          :high BotTarget
+          :chips [Chip]
+          :given [Chip BotTarget]})
+
+(def World {s/Int Bot})
+
+(s/defn bot-ready :- Bot
+  [world :- World]
+  (->> world
+    (filter (fn [[_ bot]] (= 2 (count (:chips bot)))))
+    sort
+    first
+    val))
+
+(s/defn bot-step :- World
+  [world :- World]
+  (let [bot (bot-ready world)
+        [low-chip high-chip] (sort (:chips bot))
+        low-target (:low bot)
+        high-target (:high bot)
+        world (update-in world [(:id bot) :given] conj [low-chip low-target])
+        world (update-in world [(:id bot) :given] conj [high-chip high-target])
+        world (update-in world [(:id low-target) :chips] conj low-chip)
+        world (update-in world [(:id high-target) :chips] conj high-chip)]
+    world))
+
